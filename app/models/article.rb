@@ -2,25 +2,45 @@ class Article < ActiveRecord::Base
   include Elasticsearch::Model
   include Elasticsearch::Model::Callbacks
 
-  def self.search(query)
-    __elasticsearch__.search(
-      {
-        query: {
-          multi_match: {
-            query: query,
-            fields: ['title^10', 'content']
-          }
-        },
-        highlight: {
-          pre_tags: ['<em class="label label-highlight">'],
-          post_tags: ['</em>'],
-          fields: {
-            title:   { number_of_fragments: 0 },
-            content: { fragment_size: 25 }
+  def self.mapping
+    {
+      article: {
+        properties: {
+          id: {
+            type: "long"
+          },
+          content: {
+            type: "string"
+          },
+          title: {
+            type: "string"
+          },
+          updated_at: {
+            format: "dateOptionalTime",
+            type: "date"
+          },
+          price: {
+            type: "float"
+          },
+          trendiness: {
+            type: "float"
+          },
+          published_on: {
+            format: "dateOptionalTime",
+            type: "date"
+          },
+          created_at: {
+            format: "dateOptionalTime",
+            type: "date"
           }
         }
       }
-    )
+    }
+
+  end
+
+  def self.search(query)
+    __elasticsearch__.search(query)
   end
 
   

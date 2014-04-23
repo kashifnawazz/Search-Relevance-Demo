@@ -4,12 +4,20 @@ class ArticlesController < ApplicationController
   # GET /articles
   # GET /articles.json
   def index
-    @articles = Article.all
+    puts RecAlgorithm.trendy_n_pricey().to_json
+    @articles = rec 
+    puts @articles
   end
 
   # GET /articles/search
+  #
+  
+  def rec
+    @articles = Article.search( RecAlgorithm.trendy_n_pricey )
+  end
+
   def search
-    @articles = Article.search(params[:q]).records
+    @articles = Article.search(params[:q]).page(params[:page]).records
 
     render action: "index"
   end
